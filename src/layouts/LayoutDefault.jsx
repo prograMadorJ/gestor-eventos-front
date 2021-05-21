@@ -1,6 +1,8 @@
-import Header from "../components/Header";
 import {Col, Container, Row} from "react-bootstrap";
+import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
+import Main from "../components/Main";
+import './LayoutDefault.scss';
 
 function LayoutDefault() {
   return (
@@ -8,11 +10,13 @@ function LayoutDefault() {
       <Header />
       <Container className="">
         <Row className="py-3">
-          <Col className="" xs={3}>
+          <Col className="d-none d-md-block" xs={3}>
             <Sidebar />
           </Col>
-          <Col xs={7}>1 of 1</Col>
-          <Col xs={2}>1 of 1</Col>
+          <Col xs={12} md={7}>
+            <Main />
+          </Col>
+          <Col className="d-none d-md-block" xs={2} />
         </Row>
       </Container>
     </div>

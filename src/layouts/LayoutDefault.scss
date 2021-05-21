@@ -1,6 +1,7 @@
 
 .layout-default-app {
-  .container {
-    min-height: calc(100vh - 56px);
+  .card-panel.card {
+    border-radius: 20px;
+    min-height: calc(100vh - (56px + 2rem));
   }
 }
