@@ -72,7 +72,7 @@ function postUserErrorReducer(payload) {
 }
 
 
-export const userRegisterReducers = (state = initialState, action) => {
+export const userRegisterReducer = (state = initialState, action) => {
   switch (action.type) {
     case INITIAL_USER_STATE:
       return {...initialState}

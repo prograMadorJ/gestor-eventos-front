@@ -72,7 +72,7 @@ function postEventErrorReducer(payload) {
 }
 
 
-export const eventRegisterReducers = (state = initialState, action) => {
+export const eventRegisterReducer = (state = initialState, action) => {
   switch (action.type) {
     case INITIAL_EVENT_STATE:
       return {...initialState}

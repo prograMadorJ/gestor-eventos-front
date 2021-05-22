@@ -9,7 +9,8 @@ import {
 } from "../store/actions/event-register-actions";
 import {sleep} from "../utils/simulations";
 import {Button} from "react-bootstrap";
-import {useState} from "react";
+import {useEffect, useState} from "react";
+import {setTitleHeaderApp} from "../store/actions/app-actions";
 
 function EventRegister(props) {
   
@@ -17,6 +18,10 @@ function EventRegister(props) {
   
   const dispatch = useDispatch();
   const {eventRegisterState } = props;
+  
+  useEffect(() => {
+    dispatch(setTitleHeaderApp('Eventos'))
+  }, [])
   
   async function registerEvent(data) {
     if(eventRegisterState.status === 0) {
@@ -41,7 +46,12 @@ function EventRegister(props) {
   
   return (
     <div className="event-register">
-      {!isNewEvent && <div className="event-register-top-panel mb-4">
+      <div className="d-flex align-items-center mb-4">
+        <h4 className="mr-2">{props.appState.headerTitle} </h4>
+        {isNewEvent ? <h6> /&nbsp; Cadastrar</h6> : <h6> /&nbsp; Lista</h6>}
+      </div>
+      
+      {!isNewEvent && <div className="event-register-top-panel my-4">
         <Button variant="success" onClick={handleClickNewEvent} size="sm" className="px-3">
           Novo
         </Button>
@@ -57,7 +67,8 @@ function EventRegister(props) {
 }
 
 const mapStateToProps = store => ({
-  eventRegisterState: store.eventRegisterReducers
+  eventRegisterState: store.eventRegisterReducer,
+  appState: store.appReducer
 });
 
 export default connect(mapStateToProps)(EventRegister);

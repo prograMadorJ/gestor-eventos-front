@@ -9,7 +9,8 @@ import {
 } from "../store/actions/user-register-actions";
 import {sleep} from "../utils/simulations";
 import {Button} from "react-bootstrap";
-import {useState} from "react";
+import {useEffect, useState} from "react";
+import {setTitleHeaderApp} from "../store/actions/app-actions";
 
 function UserRegister(props) {
   
@@ -17,6 +18,10 @@ function UserRegister(props) {
   
   const dispatch = useDispatch();
   const {userRegisterState } = props;
+  
+  useEffect(() => {
+    dispatch(setTitleHeaderApp('Usuários'))
+  }, [])
   
   async function registerUser(data) {
     if(userRegisterState.status === 0) {
@@ -41,7 +46,12 @@ function UserRegister(props) {
   
   return (
     <div className="user-register">
-      {!isNewUser && <div className="user-register-top-panel mb-4">
+      <div className="d-flex align-items-center mb-4">
+        <h4 className="mr-2">{props.appState.headerTitle}</h4>
+        {isNewUser ? <h6> /&nbsp;  Cadastrar</h6> : <h6> /&nbsp; Lista</h6>}
+      </div>
+     
+      {!isNewUser && <div className="user-register-top-panel my-4">
         <Button variant="success" onClick={handleClickNewUser} size="sm" className="px-3">
           Novo
         </Button>
@@ -57,7 +67,8 @@ function UserRegister(props) {
 }
 
 const mapStateToProps = store => ({
-  userRegisterState: store.userRegisterReducers
+  userRegisterState: store.userRegisterReducer,
+  appState: store.appReducer
 });
 
 export default connect(mapStateToProps)(UserRegister);

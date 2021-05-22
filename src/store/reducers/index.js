@@ -1,8 +1,10 @@
 import {combineReducers} from "redux";
-import { userRegisterReducers } from './user-register-reducer'
-import { eventRegisterReducers } from './event-register-reducer'
+import { appReducer } from "./app-reducer";
+import { userRegisterReducer } from './user-register-reducer'
+import { eventRegisterReducer } from './event-register-reducer'
 
 export const Reducers = combineReducers({
-  userRegisterReducers,
-  eventRegisterReducers
+  appReducer,
+  userRegisterReducer,
+  eventRegisterReducer
 });

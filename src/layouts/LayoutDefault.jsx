@@ -1,13 +1,16 @@
 import {Col, Container, Row} from "react-bootstrap";
+import { connect } from 'react-redux';
 import Header from "../components/layout/Header";
 import Sidebar from "../components/layout/Sidebar";
 import Main from "../components/layout/Main";
 import './LayoutDefault.scss';
 
-function LayoutDefault() {
+function LayoutDefault(props) {
   return (
     <div className="layout-default-app">
-      <Header />
+      <Header options={{
+        title: 'Gestor de Eventos'
+      }} />
       <Container className="">
         <Row className="py-3">
           <Col className="d-none d-md-block" xs={3}>
@@ -23,4 +26,8 @@ function LayoutDefault() {
   )
 }
 
-export default LayoutDefault;
+const mapStateToProps = store => ({
+  appState: store.appReducer
+});
+
+export default connect(mapStateToProps)(LayoutDefault);
