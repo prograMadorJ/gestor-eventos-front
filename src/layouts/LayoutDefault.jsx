@@ -1,7 +1,7 @@
 import {Col, Container, Row} from "react-bootstrap";
-import Header from "../components/Header";
-import Sidebar from "../components/Sidebar";
-import Main from "../components/Main";
+import Header from "../components/layout/Header";
+import Sidebar from "../components/layout/Sidebar";
+import Main from "../components/layout/Main";
 import './LayoutDefault.scss';
 
 function LayoutDefault() {
