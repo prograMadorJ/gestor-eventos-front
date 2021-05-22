@@ -1,4 +1,5 @@
 import {Card} from "react-bootstrap";
+import AppRoutes from "../../routes/Routes";
 import './Main.scss'
 
 function Main() {
@@ -6,7 +7,7 @@ function Main() {
     <div className="main-app">
       <Card className="card-panel">
         <Card.Body>
-          Main
+          <AppRoutes />
         </Card.Body>
       </Card>
     </div>
