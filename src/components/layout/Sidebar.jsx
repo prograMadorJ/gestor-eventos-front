@@ -10,7 +10,7 @@ function Sidebar() {
       <Card className="card-panel">
         <Card.Body>
           <Nav defaultActiveKey="/home" className="flex-column">
-            <Link to="/home" className="nav-link">
+            <Link to="/eventos" className="nav-link">
               <div className="d-flex align-items-center">
                 <BsTable className="mr-2"/>
                 <span>

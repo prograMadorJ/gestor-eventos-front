@@ -1,5 +1,6 @@
 import { connect } from 'react-redux';
 import RegisterForm from "../components/user-register/RegisterForm";
+import DataTableList from "../components/user-register/DataTableList";
 import { useDispatch } from "react-redux";
 import {
   finallyUserRegister,
@@ -9,7 +10,6 @@ import {
 import {sleep} from "../utils/simulations";
 import {Button} from "react-bootstrap";
 import {useState} from "react";
-import DataTableList from "../components/user-register/DataTableList";
 
 function UserRegister(props) {
   
