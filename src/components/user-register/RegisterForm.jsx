@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 
 function RegisterForm(props) {
   
-  const {handleSubmit, modal} = props.options || {};
+  const {handleSubmit, handleCancel, modal} = props.options || {};
   
   const schema = yup.object().shape({
     name: yup.string()
@@ -56,6 +56,7 @@ function RegisterForm(props) {
                 onChange={handleChange}
                 isInvalid={touched.name && !!errors.name}
                 disabled={isSubmitting}
+                autoComplete="off"
               />
               <Form.Control.Feedback type="invalid">
                 {errors.name}
@@ -70,7 +71,7 @@ function RegisterForm(props) {
                 value={values.email}
                 onChange={handleChange}
                 isInvalid={touched.email && !!errors.email}
-                autocomplete="off"
+                autoComplete="off"
                 disabled={isSubmitting}
               />
               <Form.Control.Feedback type="invalid">
@@ -86,18 +87,18 @@ function RegisterForm(props) {
                 value={values.password}
                 onChange={handleChange}
                 isInvalid={touched.password && !!errors.password}
-                autocomplete="no"
+                autoComplete="new-password"
                 disabled={isSubmitting}
               />
               <Form.Control.Feedback type="invalid">
                 {errors.password}
               </Form.Control.Feedback>
             </Form.Group>
-            {modal.status !== 1 && <Form.Group as={Col} controlId="groupControls">
-              <Button variant="primary" type="submit" className="px-4 mr-3" disabled={isSubmitting}>
+            {modal.status !== 1 && modal.status !== 2 && <Form.Group as={Col} controlId="groupControls">
+              <Button variant="primary" type="submit" size="sm" className="px-4 mr-3" disabled={isSubmitting}>
                 Salvar
               </Button>
-              <Button variant="secondary" type="button">
+              <Button variant="secondary" type="button" size="sm" onClick={handleCancel} className="px-3">
                 Cancelar
               </Button>
             </Form.Group>}

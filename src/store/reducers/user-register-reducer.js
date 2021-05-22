@@ -1,11 +1,13 @@
 import {
   INITIAL_USER_STATE,
+  FINALLY_USER_REGISTER,
   POST_USER_REQUEST,
   POST_USER_SUCCESS,
   POST_USER_ERROR
 } from "../actions";
 
 const initialState = {
+  data: [],
   status: 0,
   modal: {
     status: 0,
@@ -16,6 +18,20 @@ const initialState = {
     handleClose: undefined
   }
 };
+
+function finallyRegister() {
+  return {
+    status: 0,
+    modal: {
+      status: 0,
+      type: '',
+      title: '',
+      message: '',
+      showSpinner: false,
+      handleClose: undefined
+    }
+  }
+}
 
 function postUserRequestReducer() {
   return {
@@ -60,6 +76,8 @@ export const userRegisterReducers = (state = initialState, action) => {
   switch (action.type) {
     case INITIAL_USER_STATE:
       return {...initialState}
+    case FINALLY_USER_REGISTER:
+      return {...state, ...finallyRegister(action.payload)}
     case POST_USER_REQUEST:
       return {...state, ...postUserRequestReducer(action.payload)}
     case POST_USER_SUCCESS:
