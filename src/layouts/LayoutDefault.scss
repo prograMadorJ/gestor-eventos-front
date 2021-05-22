@@ -1,6 +1,8 @@
 
 .layout-default-app {
+  background: hsl(0deg, 0%, 85%);
   .card-panel.card {
+    background: hsl(0deg, 0%, 96%);
     border-radius: 20px;
     min-height: calc(100vh - (56px + 2rem));
   }
