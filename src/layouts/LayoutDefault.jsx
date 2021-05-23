@@ -1,11 +1,10 @@
 import {Col, Container, Row} from "react-bootstrap";
-import { connect } from 'react-redux';
 import Header from "../components/layout/Header";
 import Sidebar from "../components/layout/Sidebar";
 import Main from "../components/layout/Main";
 import './LayoutDefault.scss';
 
-function LayoutDefault(props) {
+function LayoutDefault() {
   return (
     <div className="layout-default-app">
       <Header options={{
@@ -26,8 +25,4 @@ function LayoutDefault(props) {
   )
 }
 
-const mapStateToProps = store => ({
-  appState: store.appReducer
-});
-
-export default connect(mapStateToProps)(LayoutDefault);
+export default LayoutDefault;

@@ -21,7 +21,7 @@ function EventRegister(props) {
   
   useEffect(() => {
     dispatch(setTitleHeaderApp('Eventos'))
-  }, [])
+  }, [dispatch])
   
   async function registerEvent(data) {
     if(eventRegisterState.status === 0) {

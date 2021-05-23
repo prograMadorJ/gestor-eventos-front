@@ -21,7 +21,7 @@ function UserRegister(props) {
   
   useEffect(() => {
     dispatch(setTitleHeaderApp('Usuários'))
-  }, [])
+  }, [dispatch])
   
   async function registerUser(data) {
     if(userRegisterState.status === 0) {
