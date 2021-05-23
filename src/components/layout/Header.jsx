@@ -1,5 +1,6 @@
 import {Container, Nav, Navbar} from "react-bootstrap";
 import PropTypes from 'prop-types';
+import { BsBoxArrowRight} from "react-icons/all";
 
 function Header(props) {
   
@@ -16,11 +17,18 @@ function Header(props) {
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="mr-auto d-none">
-              <Nav.Link href="#home">Home</Nav.Link>
-              <Nav.Link href="#link">Link</Nav.Link>
+            <Nav className="mr-auto d-sm-block d-lg-none">
+              <Nav.Link href="/eventos">Eventos</Nav.Link>
+              <Nav.Link href="/usuarios">Usuários</Nav.Link>
+              <Nav.Link href="/logout">Sair</Nav.Link>
             </Nav>
           </Navbar.Collapse>
+          <Nav.Link href="/logout" className="d-none d-lg-block">
+            <div className="d-flex align-items-center">
+              <span className="mr-2">Sair</span>
+              <BsBoxArrowRight />
+            </div>
+          </Nav.Link>
         </Container>
       </Navbar>
     </div>
