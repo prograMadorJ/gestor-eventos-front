@@ -6,7 +6,7 @@ import {
   deleteUserError,
   deleteUserRequest, deleteUserSuccess,
   finallyUserRegister,
-  getUserError,
+  getUserError, getUserHasEvents,
   getUserNotFound,
   getUserRequest,
   getUserSuccess,
@@ -19,6 +19,8 @@ import {Button} from "react-bootstrap";
 import {useEffect, useState} from "react";
 import {setTitleHeaderApp} from "../store/actions/app-actions";
 import service from "../services/UserRegisterService";
+import eventService from "../services/EventRegisterService";
+import ModalMessage from "../components/modal/ModalMessage";
 
 function UserRegister(props) {
   
@@ -27,15 +29,15 @@ function UserRegister(props) {
   const [editUserData, setEditUserData] = useState({})
   
   const dispatch = useDispatch();
-  const {userRegisterState } = props;
+  const {userRegisterState, appState } = props;
   
   useEffect(() => {
     dispatch(setTitleHeaderApp('Usuários'))
     fetchUsers();
-  }, [dispatch])
+  }, [])
   
   
-  function registerUser(data) {
+  function handleRegisterUser(data) {
     dispatch(initialUserState())
     dispatch(postUserRequest())
     
@@ -52,7 +54,7 @@ function UserRegister(props) {
     })
   }
   
-  function updateUser(data) {
+  function handleUpdateUser(data) {
     dispatch(initialUserState())
     dispatch(putUserRequest())
     
@@ -69,7 +71,7 @@ function UserRegister(props) {
     })
   }
   
-  function removeUser(data) {
+  function handleRemoveUser(data) {
     dispatch(initialUserState())
     dispatch(deleteUserRequest())
     
@@ -94,13 +96,26 @@ function UserRegister(props) {
     });
   }
   
-  function editUser (data) {
+  function handleEditUser (data) {
     setEditUserData(data)
     setIsEditUser(true)
   }
   
-  function deleteUser (data) {
-    removeUser(data)
+  function handleDeleteUser (data) {
+    findHasNoEvents(data)
+      .then(() => {
+        dispatch(getUserHasEvents({
+          handleClose: () => {
+            dispatch(finallyUserRegister())
+          }
+        }))
+      }).catch(err => {
+      if (err.response && err.response.data.content === null) {
+        handleRemoveUser(data)
+      } else {
+        dispatch(deleteUserError())
+      }
+    })
   }
   
   const handleClickNewUser = () => {
@@ -115,10 +130,16 @@ function UserRegister(props) {
     setIsEditUser(false)
   }
   
+  async function findHasNoEvents(user) {
+    const id = user ? user.id : null
+    const result = await eventService.getEventByUserId(id)
+    return result && result.data && result.data.content === null
+  }
+  
   return (
     <div className="user-register">
       <div className="d-flex align-items-center mb-4">
-        <h4 className="mr-2">{props.appState.headerTitle}</h4>
+        <h4 className="mr-2">{appState.headerTitle}</h4>
         {isNewUser && <h6> /&nbsp;  Cadastrar</h6>}
         {isEditUser && <h6> /&nbsp;  Editar</h6>}
         {!isEditUser && !isNewUser && <h6> /&nbsp; Lista</h6>}
@@ -132,24 +153,34 @@ function UserRegister(props) {
       
       {isNewUser &&
         <RegisterForm options={{
-          handleSubmit: registerUser,
+          handleSubmit: handleRegisterUser,
           handleCancel: handleCancelNewUser,
-          modal: props.userRegisterState.modal
+          modal: userRegisterState.modal
         }} />
       }
   
       {isEditUser &&
       <RegisterForm options={{
-        handleSubmit: updateUser,
+        handleSubmit: handleUpdateUser,
         handleCancel: handleCancelEditUser,
-        modal: props.userRegisterState.modal,
+        modal: userRegisterState.modal,
         editData: editUserData
       }} /> }
       
       {!isNewUser && !isEditUser &&
       <DataTableList data={userRegisterState.data} actions={{
-        handleEdit: editUser, handleDelete: deleteUser
+        handleEdit: handleEditUser,
+        handleDelete: handleDeleteUser
       }} />}
+      
+      {userRegisterState.status === 4 &&
+      <ModalMessage
+        status={userRegisterState.modal.status}
+        title={userRegisterState.modal.title}
+        message={userRegisterState.modal.message}
+        showSpinner={userRegisterState.modal.showSpinner}
+        handleClose={userRegisterState.modal.handleClose}
+      />}
     
     </div>
   )

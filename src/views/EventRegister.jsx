@@ -3,40 +3,140 @@ import RegisterForm from "../components/event-register/RegisterForm";
 import DataTableList from "../components/event-register/DataTableList";
 import { useDispatch } from "react-redux";
 import {
+  deleteEventError,
+  deleteEventRequest, deleteEventSuccess,
   finallyEventRegister,
+  getEventError,
+  getEventNotFound,
+  getEventRequest,
+  getEventSuccess,
+  initialEventState,
+  postEventError,
   postEventRequest,
-  postEventSuccess
+  postEventSuccess, putEventError, putEventRequest, putEventSuccess
 } from "../store/actions/event-register-actions";
-import {sleep} from "../utils/simulations";
 import {Button} from "react-bootstrap";
 import {useEffect, useState} from "react";
 import {setTitleHeaderApp} from "../store/actions/app-actions";
+import service from "../services/EventRegisterService";
+import userService from "../services/UserRegisterService";
+import {getUserError, getUserNotFound, getUserRequest, getUserSuccess} from "../store/actions/user-register-actions";
 
 function EventRegister(props) {
   
   const [isNewEvent, setIsNewEvent] = useState(false)
+  const [isEditEvent, setIsEditEvent] = useState(false)
+  const [editEventData, setEditEventData] = useState({})
   
   const dispatch = useDispatch();
-  const {eventRegisterState } = props;
+  const {eventRegisterState, userRegisterState, appState} = props;
   
   useEffect(() => {
     dispatch(setTitleHeaderApp('Eventos'))
-  }, [dispatch])
+    fetchEvents();
+  }, [])
   
-  async function registerEvent(data) {
-    if(eventRegisterState.status === 0) {
-      dispatch(postEventRequest())
-      await sleep(1000);
+  function handleRegisterEvent(data) {
+    dispatch(initialEventState())
+    dispatch(postEventRequest())
+  
+    data.user = {id: data.user}
+    
+    service.createEvent(data).then(() => {
       dispatch(postEventSuccess({
         handleClose: () => {
           setIsNewEvent(false);
           dispatch(finallyEventRegister())
+          fetchEvents()
         }
       }))
-    }
+    }).catch(err => {
+      dispatch(postEventError({
+        handleClose: () => {
+          setIsEditEvent(false);
+          dispatch(finallyEventRegister())
+          fetchEvents()
+        }
+      }))
+    })
+  }
+  
+  function handleUpdateEvent(data) {
+    dispatch(initialEventState())
+    dispatch(putEventRequest())
+    
+    data.user = {id: data.user}
+    
+    service.updateEvent(data).then(() => {
+      dispatch(putEventSuccess({
+        handleClose: () => {
+          setIsEditEvent(false);
+          dispatch(finallyEventRegister())
+          fetchEvents()
+        }
+      }))
+    }).catch(err => {
+      dispatch(putEventError({
+        handleClose: () => {
+          setIsEditEvent(false);
+          dispatch(finallyEventRegister())
+          fetchEvents()
+        }
+      }))
+    })
+  }
+  
+  function handleRemoveEvent(data) {
+    dispatch(initialEventState())
+    dispatch(deleteEventRequest())
+    
+    service.deleteEvent(data.id).then(() => {
+      dispatch(deleteEventSuccess())
+      fetchEvents()
+    }).catch(err => {
+      dispatch(deleteEventError())
+    })
+  }
+  
+  function fetchEvents() {
+    dispatch(getEventRequest())
+    
+    service.getAllEvents().then(result => {
+      dispatch(getEventSuccess({
+        data: result.data.content
+      }))
+    }).catch(err => {
+      if(err.response.status === 404) return dispatch(getEventNotFound())
+      dispatch(getEventError())
+    });
+  }
+  
+  function fetchUsers() {
+    dispatch(getUserRequest())
+    
+    userService.getAllUsers().then(result => {
+      dispatch(getUserSuccess({
+        data: result.data.content
+      }))
+    }).catch(err => {
+      if(err.response.status === 404) return dispatch(getUserNotFound())
+      dispatch(getUserError())
+    });
+  }
+  
+  function handleEditEvent (data) {
+    fetchUsers()
+    data.user = data.user ? data.user.id : null
+    setEditEventData(data)
+    setIsEditEvent(true)
+  }
+  
+  function handleDeleteEvent (data) {
+    handleRemoveEvent(data)
   }
   
   const handleClickNewEvent = () => {
+    fetchUsers()
     setIsNewEvent(true)
   }
   
@@ -44,23 +144,48 @@ function EventRegister(props) {
     setIsNewEvent(false)
   }
   
+  const handleCancelEditEvent = () => {
+    setIsEditEvent(false)
+  }
+  
   return (
     <div className="event-register">
       <div className="d-flex align-items-center mb-4">
-        <h4 className="mr-2">{props.appState.headerTitle} </h4>
-        {isNewEvent ? <h6> /&nbsp; Cadastrar</h6> : <h6> /&nbsp; Lista</h6>}
+        <h4 className="mr-2">{appState.headerTitle} </h4>
+        {isNewEvent && <h6> /&nbsp;  Cadastrar</h6>}
+        {isEditEvent && <h6> /&nbsp;  Editar</h6>}
+        {!isEditEvent && !isNewEvent && <h6> /&nbsp; Lista</h6>}
       </div>
-      
-      {!isNewEvent && <div className="event-register-top-panel my-4">
+  
+      {(!isNewEvent && !isEditEvent)  && <div className="event-register-top-panel my-4">
         <Button variant="success" onClick={handleClickNewEvent} size="sm" className="px-3">
           Novo
         </Button>
       </div>}
-      
-      {isNewEvent
-        ? <RegisterForm options={{ handleSubmit: registerEvent, handleCancel: handleCancelNewEvent, modal: props.eventRegisterState.modal }} />
-        : <DataTableList data={eventRegisterState.data} />
+  
+      {isNewEvent &&
+      <RegisterForm options={{
+        handleSubmit: handleRegisterEvent,
+        handleCancel: handleCancelNewEvent,
+        modal: eventRegisterState.modal,
+        users: userRegisterState.data
+      }} />
       }
+  
+      {isEditEvent &&
+      <RegisterForm options={{
+        handleSubmit: handleUpdateEvent,
+        handleCancel: handleCancelEditEvent,
+        modal: eventRegisterState.modal,
+        editData: editEventData,
+        users: userRegisterState.data
+      }} /> }
+  
+      {!isNewEvent && !isEditEvent &&
+      <DataTableList data={eventRegisterState.data} actions={{
+        handleEdit: handleEditEvent,
+        handleDelete: handleDeleteEvent
+      }} />}
     
     </div>
   )
@@ -68,6 +193,7 @@ function EventRegister(props) {
 
 const mapStateToProps = store => ({
   eventRegisterState: store.eventRegisterReducer,
+  userRegisterState: store.userRegisterReducer,
   appState: store.appReducer
 });
 

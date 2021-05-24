@@ -13,7 +13,8 @@ import {
   GET_USER_REQUEST,
   GET_USER_SUCCESS,
   GET_USER_ERROR,
-  GET_USER_NOT_FOUND
+  GET_USER_NOT_FOUND,
+  GET_USER_HAS_EVENTS
 } from "./index";
 
 const createAction = (type, payload) => ({
@@ -50,4 +51,6 @@ export const getUserSuccess = payload => createAction(GET_USER_SUCCESS, payload)
 export const getUserError = payload => createAction(GET_USER_ERROR, payload)
 
 export const getUserNotFound = payload => createAction(GET_USER_NOT_FOUND, payload)
+
+export const getUserHasEvents = payload => createAction(GET_USER_HAS_EVENTS, payload)
 

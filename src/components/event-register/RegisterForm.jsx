@@ -3,21 +3,27 @@ import * as yup from 'yup';
 import {Button, Col, Form } from "react-bootstrap";
 import ModalMessage from "../modal/ModalMessage";
 import PropTypes from 'prop-types';
+import {dateToStandartDateString} from "../../utils/date-utils";
 
 function RegisterForm(props) {
   
-  const {handleSubmit, handleCancel, modal} = props.options || {};
+  const {handleSubmit, handleCancel, modal, editData, users} = props.options || {};
+  const userOptions = [...[{id: null, name: ''}], ...users || []]
   
   const schema = yup.object().shape({
     name: yup.string().required('obrigatório'),
-    date: yup.date().required('obrigatório')
+    date: yup.date().required('obrigatório'),
+    user: yup.string().nullable().required('obrigatório')
   });
   
   const initialFormValues = () => {
     return {
-      name: '',
-      date: ''
-    }
+      ...{
+        name: '',
+        date: '',
+        user: null
+      },
+      ...editData || {}}
   }
   
   
@@ -38,7 +44,7 @@ function RegisterForm(props) {
           isSubmitting
         }) => (
         <Form noValidate onSubmit={handleSubmit}>
-          <Form.Row>
+          <Form.Row className="d-flex justify-content-between">
             <Form.Group as={Col} md="12" controlId="groupName">
               <Form.Label>Nome do Evento</Form.Label>
               <Form.Control
@@ -55,13 +61,13 @@ function RegisterForm(props) {
                 {errors.name}
               </Form.Control.Feedback>
             </Form.Group>
-            <Form.Group as={Col} md="12" controlId="groupDate">
+            <Form.Group as={Col} md="5" controlId="groupDate">
               <Form.Label>Data</Form.Label>
               <Form.Control
                 type="date"
                 placeholder=""
                 name="date"
-                value={values.date}
+                value={dateToStandartDateString(values.date)}
                 onChange={handleChange}
                 isInvalid={touched.date && !!errors.date}
                 autoComplete="off"
@@ -71,8 +77,32 @@ function RegisterForm(props) {
                 {errors.date}
               </Form.Control.Feedback>
             </Form.Group>
-        
-            {modal.status !== 1 && modal.status !== 2 && <Form.Group as={Col} controlId="groupControls">
+            <Form.Group as={Col} md="5" controlId="groupUser">
+              <Form.Label>Responsável</Form.Label>
+              <Form.Control
+                as="select"
+                custom
+                name="user"
+                value={values.user}
+                onChange={handleChange}
+                isInvalid={touched.user && !!errors.user}
+                disabled={isSubmitting}
+              >
+                {
+                  userOptions.map((item, index) =>
+                    <option key={index} value={item.id} label={item.name} />
+                  )
+                }
+              </Form.Control>
+              <Form.Control.Feedback type="invalid">
+                {errors.user}
+              </Form.Control.Feedback>
+            </Form.Group>
+            
+            
+            
+            {modal.status !== 1 && modal.status !== 2 &&
+            <Form.Group as={Col} xs={12} controlId="groupControls">
               <Button variant="primary" type="submit" size="sm" className="px-4 mr-3" disabled={isSubmitting}>
                 Salvar
               </Button>

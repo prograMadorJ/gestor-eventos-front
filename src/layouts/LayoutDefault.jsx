@@ -15,10 +15,10 @@ function LayoutDefault() {
           <Col className="d-none d-md-block" xs={3}>
             <Sidebar />
           </Col>
-          <Col xs={12} md={7}>
+          <Col xs={12} md={8}>
             <Main />
           </Col>
-          <Col className="d-none d-md-block" xs={2} />
+          <Col className="d-none d-md-block" />
         </Row>
       </Container>
     </div>

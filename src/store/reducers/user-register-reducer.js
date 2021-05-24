@@ -13,7 +13,8 @@ import {
   GET_USER_REQUEST,
   GET_USER_SUCCESS,
   GET_USER_ERROR,
-  GET_USER_NOT_FOUND
+  GET_USER_NOT_FOUND,
+  GET_USER_HAS_EVENTS
 } from "../actions";
 
 const initialState = {
@@ -63,7 +64,7 @@ function postUserSuccessReducer(payload) {
       title: 'Salvo',
       message: 'Usuário foi salvo com sucesso!',
       showSpinner: false,
-      handleClose: payload.handleClose
+      handleClose: payload && payload.handleClose
     }
   }
 }
@@ -76,10 +77,11 @@ function postUserErrorReducer(payload) {
       title: 'Erro',
       message: 'Não foi possível completar a solicitação, tente novamente.',
       showSpinner: false,
-      handleClose: payload.handleClose
+      handleClose: payload && payload.handleClose
     }
   }
 }
+
 
 function putUserRequestReducer() {
   return {
@@ -101,7 +103,7 @@ function putUserSuccessReducer(payload) {
       title: 'Atualizado',
       message: 'Usuário foi atualizado com sucesso!',
       showSpinner: false,
-      handleClose: payload.handleClose
+      handleClose: payload && payload.handleClose
     }
   }
 }
@@ -114,10 +116,12 @@ function putUserErrorReducer(payload) {
       title: 'Erro',
       message: 'Não foi possível completar a solicitação, tente novamente.',
       showSpinner: false,
-      handleClose: payload.handleClose
+      handleClose: payload && payload.handleClose
     }
   }
 }
+
+
 
 function deleteUserRequestReducer() {
   return {
@@ -163,6 +167,19 @@ function getUserNotFoundReducer(payload) {
   }
 }
 
+function getUserHasEventReducer(payload) {
+  return {
+    status: 4,
+    modal: {
+      status: 4,
+      title: 'Atenção',
+      message: 'Este usuário possui eventos associados, e não poderá ser excluído. Remova todos os eventos associados para poder exlcuír o usuário.',
+      showSpinner: false,
+      handleClose: payload && payload.handleClose
+    }
+  }
+}
+
 
 export const userRegisterReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -196,6 +213,8 @@ export const userRegisterReducer = (state = initialState, action) => {
       return {...state, ...getUserErrorReducer(action.payload)}
     case GET_USER_NOT_FOUND:
       return {...state, ...getUserNotFoundReducer(action.payload)}
+    case GET_USER_HAS_EVENTS:
+      return {...state, ...getUserHasEventReducer(action.payload)}
     default:
       return state;
   }
