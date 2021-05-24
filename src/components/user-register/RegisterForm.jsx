@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 
 function RegisterForm(props) {
   
-  const {handleSubmit, handleCancel, modal} = props.options || {};
+  const {handleSubmit, handleCancel, modal, editData} = props.options || {};
   
   const schema = yup.object().shape({
     name: yup.string()
@@ -21,10 +21,12 @@ function RegisterForm(props) {
   
   const initialFormValues = () => {
     return {
-      name: '',
-      email: '',
-      password: ''
-    }
+      ...{
+        name: '',
+        email: '',
+        password: ''
+      },
+      ...editData || {}}
   }
   
   
