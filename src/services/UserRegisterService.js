@@ -1,25 +1,25 @@
-import api from './index'
+import api, {jwt} from './index'
 
 
 const UserRegisterService = () => ({
-  createUser(data)  {
-    return api.post('/users', data)
+  createUser(data, token)  {
+    return api.post('/users', data, jwt(token))
   },
   
-  updateUser(data) {
-    return api.put('/users', data)
+  updateUser(data, token) {
+    return api.put('/users', data, jwt(token))
   },
   
-  deleteUser(id) {
-    return api.delete(`/users/${id}`)
+  deleteUser(id, token) {
+    return api.delete(`/users/${id}`, jwt(token))
   },
   
-  getUser(id) {
-    return api.get(`/users/${id}`)
+  getUser(id, token) {
+    return api.get(`/users/${id}`, jwt(token))
   },
   
-  getAllUsers()  {
-    return api.get(`/users/`)
+  getAllUsers(token)  {
+    return api.get(`/users/`, jwt(token))
   }
 })
 

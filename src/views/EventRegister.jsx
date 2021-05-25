@@ -21,6 +21,7 @@ import {setTitleHeaderApp} from "../store/actions/app-actions";
 import service from "../services/EventRegisterService";
 import userService from "../services/UserRegisterService";
 import {getUserError, getUserNotFound, getUserRequest, getUserSuccess} from "../store/actions/user-register-actions";
+import {authLogoutSuccess} from "../store/actions/auth-actions";
 
 function EventRegister(props) {
   
@@ -29,7 +30,7 @@ function EventRegister(props) {
   const [editEventData, setEditEventData] = useState({})
   
   const dispatch = useDispatch();
-  const {eventRegisterState, userRegisterState, appState} = props;
+  const {eventRegisterState, userRegisterState, appState, authState} = props;
   
   useEffect(() => {
     dispatch(setTitleHeaderApp('Eventos'))
@@ -42,7 +43,7 @@ function EventRegister(props) {
   
     data.user = {id: data.user}
     
-    service.createEvent(data).then(() => {
+    service.createEvent(data, authState.token).then(() => {
       dispatch(postEventSuccess({
         handleClose: () => {
           setIsNewEvent(false);
@@ -51,6 +52,9 @@ function EventRegister(props) {
         }
       }))
     }).catch(err => {
+      if(err.response && err.response.status === 403)
+        dispatch(authLogoutSuccess())
+      
       dispatch(postEventError({
         handleClose: () => {
           setIsEditEvent(false);
@@ -67,7 +71,7 @@ function EventRegister(props) {
     
     data.user = {id: data.user}
     
-    service.updateEvent(data).then(() => {
+    service.updateEvent(data, authState.token).then(() => {
       dispatch(putEventSuccess({
         handleClose: () => {
           setIsEditEvent(false);
@@ -76,6 +80,9 @@ function EventRegister(props) {
         }
       }))
     }).catch(err => {
+      if(err.response && err.response.status === 403)
+        dispatch(authLogoutSuccess())
+      
       dispatch(putEventError({
         handleClose: () => {
           setIsEditEvent(false);
@@ -90,10 +97,13 @@ function EventRegister(props) {
     dispatch(initialEventState())
     dispatch(deleteEventRequest())
     
-    service.deleteEvent(data.id).then(() => {
+    service.deleteEvent(data.id, authState.token).then(() => {
       dispatch(deleteEventSuccess())
       fetchEvents()
     }).catch(err => {
+      if(err.response && err.response.status === 403)
+        dispatch(authLogoutSuccess())
+      
       dispatch(deleteEventError())
     })
   }
@@ -101,12 +111,15 @@ function EventRegister(props) {
   function fetchEvents() {
     dispatch(getEventRequest())
     
-    service.getAllEvents().then(result => {
+    service.getAllEvents(authState.token).then(result => {
       dispatch(getEventSuccess({
         data: result.data.content
       }))
     }).catch(err => {
       if(err.response.status === 404) return dispatch(getEventNotFound())
+      if(err.response && err.response.status === 403)
+        dispatch(authLogoutSuccess())
+      
       dispatch(getEventError())
     });
   }
@@ -114,12 +127,15 @@ function EventRegister(props) {
   function fetchUsers() {
     dispatch(getUserRequest())
     
-    userService.getAllUsers().then(result => {
+    userService.getAllUsers(authState.token).then(result => {
       dispatch(getUserSuccess({
         data: result.data.content
       }))
     }).catch(err => {
       if(err.response.status === 404) return dispatch(getUserNotFound())
+      if(err.response && err.response.status === 403)
+        dispatch(authLogoutSuccess())
+      
       dispatch(getUserError())
     });
   }
@@ -194,7 +210,8 @@ function EventRegister(props) {
 const mapStateToProps = store => ({
   eventRegisterState: store.eventRegisterReducer,
   userRegisterState: store.userRegisterReducer,
-  appState: store.appReducer
+  appState: store.appReducer,
+  authState: store.authReducer
 });
 
 export default connect(mapStateToProps)(EventRegister);

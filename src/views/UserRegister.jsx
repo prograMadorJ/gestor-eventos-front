@@ -21,6 +21,7 @@ import {setTitleHeaderApp} from "../store/actions/app-actions";
 import service from "../services/UserRegisterService";
 import eventService from "../services/EventRegisterService";
 import ModalMessage from "../components/modal/ModalMessage";
+import {authLogoutSuccess} from "../store/actions/auth-actions";
 
 function UserRegister(props) {
   
@@ -29,7 +30,7 @@ function UserRegister(props) {
   const [editUserData, setEditUserData] = useState({})
   
   const dispatch = useDispatch();
-  const {userRegisterState, appState } = props;
+  const {userRegisterState, appState, authState } = props;
   
   useEffect(() => {
     dispatch(setTitleHeaderApp('Usuários'))
@@ -41,7 +42,7 @@ function UserRegister(props) {
     dispatch(initialUserState())
     dispatch(postUserRequest())
     
-   service.createUser(data).then(() => {
+   service.createUser(data, authState.token).then(() => {
       dispatch(postUserSuccess({
         handleClose: () => {
           setIsNewUser(false);
@@ -51,6 +52,8 @@ function UserRegister(props) {
       }))
     }).catch(err => {
       dispatch(postUserError())
+     if(err.response && err.response.status === 403)
+       dispatch(authLogoutSuccess())
     })
   }
   
@@ -58,7 +61,7 @@ function UserRegister(props) {
     dispatch(initialUserState())
     dispatch(putUserRequest())
     
-    service.updateUser(data).then(() => {
+    service.updateUser(data, authState.token).then(() => {
       dispatch(putUserSuccess({
         handleClose: () => {
           setIsEditUser(false);
@@ -68,6 +71,8 @@ function UserRegister(props) {
       }))
     }).catch(err => {
       dispatch(putUserError())
+      if(err.response && err.response.status === 403)
+        dispatch(authLogoutSuccess())
     })
   }
   
@@ -75,23 +80,28 @@ function UserRegister(props) {
     dispatch(initialUserState())
     dispatch(deleteUserRequest())
     
-    service.deleteUser(data.id).then(() => {
+    service.deleteUser(data.id, authState.token).then(() => {
       dispatch(deleteUserSuccess())
       fetchUsers()
     }).catch(err => {
       dispatch(deleteUserError())
+      if(err.response && err.response.status === 403)
+        dispatch(authLogoutSuccess())
     })
   }
   
   function fetchUsers() {
     dispatch(getUserRequest())
     
-    service.getAllUsers().then(result => {
+    service.getAllUsers(authState.token).then(result => {
       dispatch(getUserSuccess({
         data: result.data.content
       }))
     }).catch(err => {
       if(err.response.status === 404) return dispatch(getUserNotFound())
+      if(err.response && err.response.status === 403) {
+        dispatch(authLogoutSuccess())
+      }
       dispatch(getUserError())
     });
   }
@@ -132,7 +142,7 @@ function UserRegister(props) {
   
   async function findHasNoEvents(user) {
     const id = user ? user.id : null
-    const result = await eventService.getEventByUserId(id)
+    const result = await eventService.getEventByUserId(id, authState.token)
     return result && result.data && result.data.content === null
   }
   
@@ -188,7 +198,8 @@ function UserRegister(props) {
 
 const mapStateToProps = store => ({
   userRegisterState: store.userRegisterReducer,
-  appState: store.appReducer
+  appState: store.appReducer,
+  authState: store.authReducer
 });
 
 export default connect(mapStateToProps)(UserRegister);

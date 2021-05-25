@@ -1,10 +1,11 @@
 import {connect, useDispatch} from "react-redux";
 import { useHistory } from 'react-router-dom'
 import LoginForm from "../components/auth/LoginForm";
-import {authRequest, authLoginSuccess, authLogoutSuccess} from "../store/actions/auth-actions";
-import {sleep} from "../utils/simulations";
+import {authRequest, authLoginSuccess, authLogoutSuccess, authError} from "../store/actions/auth-actions";
+import authService from '../services/AuthService'
 import PropTypes from 'prop-types';
 import {useEffect} from "react";
+import {sleep} from "../utils/simulations";
 
 
 function Auth(props) {
@@ -17,19 +18,27 @@ function Auth(props) {
     if (isLogout) logout()
   }, [isLogout])
   
-  async function login() {
+  async function login(data) {
     dispatch(authRequest())
-    await sleep(800)
-    dispatch(authLoginSuccess({
-      token: '123',
-      user: {id: 1, name: 'Teste', email: 'teste@teste.com'}
-    }))
-    router.push('/')
+    await sleep(1000)
+    authService.authentication({username: data.email, password: data.password})
+      .then((result) => {
+        dispatch(authLoginSuccess({
+          token: result.data.jwt,
+          user: result.data.user
+        }))
+        router.push('/')
+      }).catch(err => {
+      if(err.response)
+        dispatch(authError({httpStatus: err.response.status}))
+      else
+        dispatch(authError({httpStatus: 500}))
+    })
+    
   }
   
   function logout() {
     dispatch(authRequest())
- 
     dispatch(authLogoutSuccess())
     router.push('/login')
   }

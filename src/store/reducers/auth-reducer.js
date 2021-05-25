@@ -39,7 +39,8 @@ function authErrorReducer(payload) {
   return {
     status: 3,
     token: '',
-    isAuthenticated: false
+    isAuthenticated: false,
+    httpStatus: payload && payload.httpStatus
   }
 }
 

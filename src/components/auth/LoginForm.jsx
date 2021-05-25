@@ -1,12 +1,18 @@
 import * as yup from "yup";
 import {Formik} from "formik";
-import {Button, Col, Form, Spinner} from "react-bootstrap";
+import {Alert, Button, Col, Form, Spinner} from "react-bootstrap";
 import PropTypes from 'prop-types';
+import {useEffect, useState} from "react";
 
 
 function LoginForm(props) {
   
   const {handleSubmit, authState} = props.options || {};
+  const [errorMessage, setErrorMessage] = useState()
+  
+  useEffect(() => {
+    authErrorMessages(authState.httpStatus)
+  }, [authState.httpStatus])
   
   const schema = yup.object().shape({
     email: yup.string()
@@ -21,6 +27,12 @@ function LoginForm(props) {
       email: '',
       password: ''
     }
+  }
+  
+  function authErrorMessages(status) {
+    if (status === 401) setErrorMessage('login inválido ou usuário bloqueado.')
+    else if (status === 403) setErrorMessage('usuário ou senha inválidos, tente novamente.')
+    else if (status >= 500) setErrorMessage('erro ao tentar login, tente novamente.')
   }
   
   
@@ -56,7 +68,7 @@ function LoginForm(props) {
                   onChange={handleChange}
                   isInvalid={touched.email && !!errors.email}
                   autoComplete="off"
-                  disabled={isSubmitting}
+                  disabled={authState.status === 1}
                 />
                 <Form.Control.Feedback type="invalid">
                   {errors.email}
@@ -72,27 +84,32 @@ function LoginForm(props) {
                   onChange={handleChange}
                   isInvalid={touched.password && !!errors.password}
                   autoComplete="new-password"
-                  disabled={isSubmitting}
+                  disabled={authState.status === 1}
                 />
                 <Form.Control.Feedback type="invalid">
                   {errors.password}
                 </Form.Control.Feedback>
               </Form.Group>
-              {authState.status !== 1 && authState.status !== 2 && <Form.Group as={Col} className="d-flex justify-content-center" controlId="groupControls">
-                <Button variant="primary" type="submit" size="sm" className="px-4 mr-3" disabled={isSubmitting}>
+              {authState.status !== 1 && authState.status !== 2 &&
+              <Form.Group as={Col} className="d-flex justify-content-center" controlId="groupControls">
+                <Button variant="primary" type="submit" size="sm" className="px-4 mr-3" disabled={authState.status === 1}>
                   Login
                 </Button>
               </Form.Group>}
               {authState.status === 1 &&
-                <div className="d-flex justify-content-center align-items-center w-100">
-                  <Spinner animation="border" size="sm" role="status" />
-                  <div className="ml-2">Aguarde...</div>
-                </div>
+              <div className="d-flex justify-content-center align-items-center w-100">
+                <Spinner animation="border" size="sm" role="status"/>
+                <div className="ml-2">Aguarde...</div>
+              </div>
               }
             </Form.Row>
           </Form>
         )}
       </Formik>
+      {authState.status === 3 &&
+      <Alert variant="danger">
+        {errorMessage}
+      </Alert>}
     </div>
   );
 }

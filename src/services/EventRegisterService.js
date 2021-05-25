@@ -1,29 +1,30 @@
-import api from './index'
+import api, {jwt} from './index'
+
 
 
 const EventRegisterService = () => ({
-  createEvent(data)  {
-    return api.post('/events', data)
+  createEvent(data, token)  {
+    return api.post('/events', data, jwt(token))
   },
   
-  updateEvent(data) {
-    return api.put('/events', data)
+  updateEvent(data, token) {
+    return api.put('/events', data, jwt(token))
   },
   
-  deleteEvent(id) {
-    return api.delete(`/events/${id}`)
+  deleteEvent(id, token) {
+    return api.delete(`/events/${id}`, jwt(token))
   },
   
-  getEvent(id) {
-    return api.get(`/events/${id}`)
+  getEvent(id, token) {
+    return api.get(`/events/${id}`, jwt(token))
   },
   
-  getAllEvents()  {
-    return api.get(`/events/`)
+  getAllEvents(token)  {
+    return api.get(`/events/`, jwt(token))
   },
   
-  getEventByUserId(id) {
-    return api.get(`/events/user/${id}`)
+  getEventByUserId(id, token) {
+    return api.get(`/events/user/${id}`, jwt(token))
   },
 })
 
