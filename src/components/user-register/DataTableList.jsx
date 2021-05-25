@@ -8,6 +8,7 @@ import ModalDialogMessage from "../modal/ModalDialogMessage";
 function DataTableList(props) {
   
   const data = props.data || []
+  const {authState} = props
   const {handleEdit, handleDelete} = props.actions || {}
   const [showDialog, setShowDialog] = useState(0)
   const [handleYes, setHandleYes] = useState()
@@ -48,12 +49,16 @@ function DataTableList(props) {
             <td>{item.name}</td>
             <td>{item.email}</td>
             <td>
-              <Button onClick={() => handleEdit(item)} size="sm" className="mr-2" variant="transparent" title="editar">
-                <BsPencil color="#007bff" strokeWidth={0.5}/>
-              </Button>
-              <Button onClick={() => dialogActions( () => handleDelete(item))} size="sm" variant="transparent" title="remover">
-                <BsTrash color="#dc3545" strokeWidth={0.5}/>
-              </Button>
+              {(authState.user.admin || (authState.user.email === item.email)) &&
+              <div>
+                <Button onClick={() => handleEdit(item)} size="sm" className="mr-2" variant="transparent" title="editar">
+                  <BsPencil color="#007bff" strokeWidth={0.5}/>
+                </Button>
+                {item.role !== authState.user.role &&
+                <Button onClick={() => dialogActions( () => handleDelete(item))} size="sm" variant="transparent" title="remover">
+                  <BsTrash color="#dc3545" strokeWidth={0.5}/>
+                </Button>}
+              </div>}
             </td>
           </tr>
         )}
@@ -71,7 +76,8 @@ function DataTableList(props) {
 
 DataTableList.propTypes = {
   data: PropTypes.array,
-  actions: PropTypes.object
+  actions: PropTypes.object,
+  authState: PropTypes.object
 }
 
 export default DataTableList;

@@ -42,7 +42,7 @@ function UserRegister(props) {
     dispatch(initialUserState())
     dispatch(postUserRequest())
     
-   service.createUser(data, authState.token).then(() => {
+    service.createUser(data, authState.token).then(() => {
       dispatch(postUserSuccess({
         handleClose: () => {
           setIsNewUser(false);
@@ -51,9 +51,12 @@ function UserRegister(props) {
         }
       }))
     }).catch(err => {
-      dispatch(postUserError())
-     if(err.response && err.response.status === 403)
-       dispatch(authLogoutSuccess())
+      dispatch(postUserError({
+        handleClose: () => {
+          dispatch(finallyUserRegister())
+        }
+      }))
+      checkAuthError(err)
     })
   }
   
@@ -70,9 +73,12 @@ function UserRegister(props) {
         }
       }))
     }).catch(err => {
-      dispatch(putUserError())
-      if(err.response && err.response.status === 403)
-        dispatch(authLogoutSuccess())
+      dispatch(putUserError({
+        handleClose: () => {
+          dispatch(finallyUserRegister())
+        }
+      }))
+      checkAuthError(err)
     })
   }
   
@@ -84,9 +90,10 @@ function UserRegister(props) {
       dispatch(deleteUserSuccess())
       fetchUsers()
     }).catch(err => {
-      dispatch(deleteUserError())
-      if(err.response && err.response.status === 403)
-        dispatch(authLogoutSuccess())
+      dispatch(deleteUserError({
+        handleClose: () => {}
+      }))
+      checkAuthError(err)
     })
   }
   
@@ -98,11 +105,11 @@ function UserRegister(props) {
         data: result.data.content
       }))
     }).catch(err => {
-      if(err.response.status === 404) return dispatch(getUserNotFound())
-      if(err.response && err.response.status === 403) {
-        dispatch(authLogoutSuccess())
-      }
-      dispatch(getUserError())
+      if(err && err.response.status === 404) return dispatch(getUserNotFound())
+      checkAuthError(err)
+      dispatch(getUserError(({
+        handleClose: () => {}
+      })))
     });
   }
   
@@ -123,7 +130,11 @@ function UserRegister(props) {
       if (err.response && err.response.data.content === null) {
         handleRemoveUser(data)
       } else {
-        dispatch(deleteUserError())
+        dispatch(deleteUserError({
+          handleClose: () => {
+            dispatch(finallyUserRegister())
+          }
+        }))
       }
     })
   }
@@ -146,6 +157,11 @@ function UserRegister(props) {
     return result && result.data && result.data.content === null
   }
   
+  function checkAuthError(err) {
+    if(err && err.response && err.response.status === 403)
+      dispatch(authLogoutSuccess())
+  }
+  
   return (
     <div className="user-register">
       <div className="d-flex align-items-center mb-4">
@@ -155,20 +171,20 @@ function UserRegister(props) {
         {!isEditUser && !isNewUser && <h6> /&nbsp; Lista</h6>}
       </div>
       
-      {(!isNewUser && !isEditUser) && <div className="user-register-top-panel my-4">
+      {(!isNewUser && !isEditUser && authState.user.admin) && <div className="user-register-top-panel my-4">
         <Button variant="success" onClick={handleClickNewUser} size="sm" className="px-3">
           Novo
         </Button>
       </div>}
       
       {isNewUser &&
-        <RegisterForm options={{
-          handleSubmit: handleRegisterUser,
-          handleCancel: handleCancelNewUser,
-          modal: userRegisterState.modal
-        }} />
+      <RegisterForm options={{
+        handleSubmit: handleRegisterUser,
+        handleCancel: handleCancelNewUser,
+        modal: userRegisterState.modal
+      }} />
       }
-  
+      
       {isEditUser &&
       <RegisterForm options={{
         handleSubmit: handleUpdateUser,
@@ -181,7 +197,7 @@ function UserRegister(props) {
       <DataTableList data={userRegisterState.data} actions={{
         handleEdit: handleEditUser,
         handleDelete: handleDeleteUser
-      }} />}
+      }} authState={authState} />}
       
       {userRegisterState.status === 4 &&
       <ModalMessage

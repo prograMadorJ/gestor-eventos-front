@@ -52,8 +52,7 @@ function EventRegister(props) {
         }
       }))
     }).catch(err => {
-      if(err.response && err.response.status === 403)
-        dispatch(authLogoutSuccess())
+      checkAuthError(err)
       
       dispatch(postEventError({
         handleClose: () => {
@@ -80,8 +79,7 @@ function EventRegister(props) {
         }
       }))
     }).catch(err => {
-      if(err.response && err.response.status === 403)
-        dispatch(authLogoutSuccess())
+      checkAuthError(err)
       
       dispatch(putEventError({
         handleClose: () => {
@@ -101,8 +99,7 @@ function EventRegister(props) {
       dispatch(deleteEventSuccess())
       fetchEvents()
     }).catch(err => {
-      if(err.response && err.response.status === 403)
-        dispatch(authLogoutSuccess())
+      checkAuthError(err)
       
       dispatch(deleteEventError())
     })
@@ -117,8 +114,7 @@ function EventRegister(props) {
       }))
     }).catch(err => {
       if(err.response.status === 404) return dispatch(getEventNotFound())
-      if(err.response && err.response.status === 403)
-        dispatch(authLogoutSuccess())
+      checkAuthError(err)
       
       dispatch(getEventError())
     });
@@ -133,8 +129,7 @@ function EventRegister(props) {
       }))
     }).catch(err => {
       if(err.response.status === 404) return dispatch(getUserNotFound())
-      if(err.response && err.response.status === 403)
-        dispatch(authLogoutSuccess())
+      checkAuthError(err)
       
       dispatch(getUserError())
     });
@@ -162,6 +157,11 @@ function EventRegister(props) {
   
   const handleCancelEditEvent = () => {
     setIsEditEvent(false)
+  }
+  
+  function checkAuthError(err) {
+    if(err.response && err.response.status === 403)
+      dispatch(authLogoutSuccess())
   }
   
   return (

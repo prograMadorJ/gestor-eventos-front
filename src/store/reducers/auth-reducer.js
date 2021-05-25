@@ -12,7 +12,8 @@ const initialState = {
   user: {
     id: null,
     name: '',
-    email: ''
+    email: '',
+    admin: false
   }
 };
 
@@ -40,6 +41,7 @@ function authErrorReducer(payload) {
     status: 3,
     token: '',
     isAuthenticated: false,
+    user: null,
     httpStatus: payload && payload.httpStatus
   }
 }

@@ -54,7 +54,7 @@ function RegisterForm(props) {
                 value={values.name}
                 onChange={handleChange}
                 isInvalid={touched.name && !!errors.name}
-                disabled={isSubmitting}
+                disabled={modal.status === 1}
                 autoComplete="off"
               />
               <Form.Control.Feedback type="invalid">
@@ -71,7 +71,7 @@ function RegisterForm(props) {
                 onChange={handleChange}
                 isInvalid={touched.date && !!errors.date}
                 autoComplete="off"
-                disabled={isSubmitting}
+                disabled={modal.status === 1}
               />
               <Form.Control.Feedback type="invalid">
                 {errors.date}
@@ -86,7 +86,7 @@ function RegisterForm(props) {
                 value={values.user}
                 onChange={handleChange}
                 isInvalid={touched.user && !!errors.user}
-                disabled={isSubmitting}
+                disabled={modal.status === 1}
               >
                 {
                   userOptions.map((item, index) =>
@@ -103,7 +103,7 @@ function RegisterForm(props) {
             
             {modal.status !== 1 && modal.status !== 2 &&
             <Form.Group as={Col} xs={12} controlId="groupControls">
-              <Button variant="primary" type="submit" size="sm" className="px-4 mr-3" disabled={isSubmitting}>
+              <Button variant="primary" type="submit" size="sm" className="px-4 mr-3" disabled={modal.status === 1}>
                 Salvar
               </Button>
               <Button variant="secondary" type="button" size="sm" onClick={handleCancel} className="px-3">

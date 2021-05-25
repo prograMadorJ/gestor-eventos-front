@@ -74,7 +74,7 @@ function RegisterForm(props) {
                 onChange={handleChange}
                 isInvalid={touched.email && !!errors.email}
                 autoComplete="off"
-                disabled={isSubmitting}
+                disabled={modal.status === 1}
               />
               <Form.Control.Feedback type="invalid">
                 {errors.email}
@@ -90,14 +90,14 @@ function RegisterForm(props) {
                 onChange={handleChange}
                 isInvalid={touched.password && !!errors.password}
                 autoComplete="new-password"
-                disabled={isSubmitting}
+                disabled={modal.status === 1}
               />
               <Form.Control.Feedback type="invalid">
                 {errors.password}
               </Form.Control.Feedback>
             </Form.Group>
             {modal.status !== 1 && modal.status !== 2 && <Form.Group as={Col} controlId="groupControls">
-              <Button variant="primary" type="submit" size="sm" className="px-4 mr-3" disabled={isSubmitting}>
+              <Button variant="primary" type="submit" size="sm" className="px-4 mr-3" disabled={modal.status === 1}>
                 Salvar
               </Button>
               <Button variant="secondary" type="button" size="sm" onClick={handleCancel} className="px-3">
