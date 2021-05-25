@@ -7,6 +7,7 @@ import {
   PUT_USER_REQUEST,
   PUT_USER_SUCCESS,
   PUT_USER_ERROR,
+  POST_USER_CONFLICT,
   DELETE_USER_REQUEST,
   DELETE_USER_SUCCESS,
   DELETE_USER_ERROR,
@@ -31,6 +32,8 @@ export const postUserRequest = payload => createAction(POST_USER_REQUEST, payloa
 export const postUserSuccess = payload => createAction(POST_USER_SUCCESS, payload)
 
 export const postUserError = payload => createAction(POST_USER_ERROR, payload)
+
+export const postUserConflict = payload => createAction(POST_USER_CONFLICT, payload)
 
 export const putUserRequest = payload => createAction(PUT_USER_REQUEST, payload)
 

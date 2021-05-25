@@ -4,6 +4,7 @@ import {
   POST_USER_REQUEST,
   POST_USER_SUCCESS,
   POST_USER_ERROR,
+  POST_USER_CONFLICT,
   PUT_USER_REQUEST,
   PUT_USER_SUCCESS,
   PUT_USER_ERROR,
@@ -76,6 +77,19 @@ function postUserErrorReducer(payload) {
       status: 3,
       title: 'Erro',
       message: 'Não foi possível completar a solicitação, tente novamente.',
+      showSpinner: false,
+      handleClose: payload && payload.handleClose
+    }
+  }
+}
+
+function postUserConfictReducer(payload) {
+  return {
+    status: 3,
+    modal: {
+      status: 3,
+      title: 'Atenção',
+      message: 'Não foi possível conluir a operação pois o usuário já exsite cadastrado.',
       showSpinner: false,
       handleClose: payload && payload.handleClose
     }
@@ -193,6 +207,8 @@ export const userRegisterReducer = (state = initialState, action) => {
       return {...state, ...postUserSuccessReducer(action.payload)}
     case POST_USER_ERROR:
       return {...state, ...postUserErrorReducer(action.payload)}
+    case POST_USER_CONFLICT:
+      return {...state, ...postUserConfictReducer(action.payload)}
     case PUT_USER_ERROR:
       return {...state, ...putUserErrorReducer(action.payload)}
     case PUT_USER_REQUEST:

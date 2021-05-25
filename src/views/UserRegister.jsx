@@ -11,6 +11,7 @@ import {
   getUserRequest,
   getUserSuccess,
   initialUserState,
+  postUserConflict,
   postUserError,
   postUserRequest,
   postUserSuccess, putUserError, putUserRequest, putUserSuccess
@@ -51,11 +52,19 @@ function UserRegister(props) {
         }
       }))
     }).catch(err => {
-      dispatch(postUserError({
-        handleClose: () => {
-          dispatch(finallyUserRegister())
-        }
-      }))
+      if(err && err.response && err.response.status === 409)
+        dispatch(postUserConflict({
+          handleClose: () => {
+            dispatch(finallyUserRegister())
+          }
+        }))
+      else {
+        dispatch(postUserError({
+          handleClose: () => {
+            dispatch(finallyUserRegister())
+          }
+        }))
+      }
       checkAuthError(err)
     })
   }
@@ -145,10 +154,12 @@ function UserRegister(props) {
   
   const handleCancelNewUser = () => {
     setIsNewUser(false)
+    fetchUsers()
   }
   
   const handleCancelEditUser = () => {
     setIsEditUser(false)
+    fetchUsers()
   }
   
   async function findHasNoEvents(user) {

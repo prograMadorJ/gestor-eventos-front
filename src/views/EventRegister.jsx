@@ -153,10 +153,12 @@ function EventRegister(props) {
   
   const handleCancelNewEvent = () => {
     setIsNewEvent(false)
+    fetchEvents()
   }
   
   const handleCancelEditEvent = () => {
     setIsEditEvent(false)
+    fetchEvents()
   }
   
   function checkAuthError(err) {

@@ -57,7 +57,7 @@ function RegisterForm(props) {
                 value={values.name}
                 onChange={handleChange}
                 isInvalid={touched.name && !!errors.name}
-                disabled={isSubmitting}
+                disabled={modal.status === 1}
                 autoComplete="off"
               />
               <Form.Control.Feedback type="invalid">
