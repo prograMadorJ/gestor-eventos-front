@@ -24,8 +24,8 @@ function Auth(props) {
     authService.authentication({username: data.email, password: data.password})
       .then((result) => {
         dispatch(authLoginSuccess({
-          token: result.data.jwt,
-          user: result.data.user
+          token: result.data.content.jwt,
+          user: result.data.content.user
         }))
         router.push('/')
       }).catch(err => {
