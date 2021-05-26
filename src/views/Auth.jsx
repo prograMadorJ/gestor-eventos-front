@@ -27,7 +27,7 @@ function Auth(props) {
           token: result.data.content.jwt,
           user: result.data.content.user
         }))
-        router.push('/')
+        router.push('/app')
       }).catch(err => {
       if(err.response)
         dispatch(authError({httpStatus: err.response.status}))
@@ -40,7 +40,7 @@ function Auth(props) {
   function logout() {
     dispatch(authRequest())
     dispatch(authLogoutSuccess())
-    router.push('/login')
+    router.push('/app/login')
   }
   
   return (

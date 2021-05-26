@@ -7,7 +7,7 @@ function PrivateRoute ({isAuthenticated, component, ...rest }) {
       return isAuthenticated === true
         ? component()
         : <Redirect to={{
-          pathname: '/login',
+          pathname: '/app/login',
           state: { from: location }
         }} />
     }} />

@@ -18,12 +18,12 @@ function Header(props) {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="mr-auto d-sm-block d-lg-none">
-              <Nav.Link href="/eventos">Eventos</Nav.Link>
-              <Nav.Link href="/usuarios">Usuários</Nav.Link>
-              <Nav.Link href="/logout">Sair</Nav.Link>
+              <Nav.Link href="/app/eventos">Eventos</Nav.Link>
+              <Nav.Link href="/app/usuarios">Usuários</Nav.Link>
+              <Nav.Link href="/app/logout">Sair</Nav.Link>
             </Nav>
           </Navbar.Collapse>
-          <Nav.Link href="/logout" className="d-none d-lg-block">
+          <Nav.Link href="/app/logout" className="d-none d-lg-block">
             <div className="d-flex align-items-center">
               <span className="mr-2">Sair</span>
               <BsBoxArrowRight />

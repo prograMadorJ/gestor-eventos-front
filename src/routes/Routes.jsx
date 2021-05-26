@@ -7,9 +7,9 @@ import Auth from "../views/Auth";
 function AppRoutes() {
   return (
     <Switch>
-      <Route path="/eventos" component={EventRegister} />
-      <Route path="/usuarios" component={UserRegister} />
-      <Route path="/logout">
+      <Route path="/app/eventos" component={EventRegister} />
+      <Route path="/app/usuarios" component={UserRegister} />
+      <Route path="/app/logout">
         <Auth isLogout={true} />
       </Route>
     </Switch>

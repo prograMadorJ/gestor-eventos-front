@@ -6,7 +6,7 @@ function PublicRoute ({isAuthenticated, typeAccess, component, ...rest }) {
     <Route {...rest} render={({location}) => {
       return isAuthenticated === true && typeAccess === 'no-auth'
         ? <Redirect to={{
-          pathname: '/',
+          pathname: '/app',
           state: { from: location }
         }} />
         : component()
