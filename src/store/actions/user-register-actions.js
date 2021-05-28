@@ -1,59 +1,43 @@
-import {
-  INITIAL_USER_STATE,
-  FINALLY_USER_REGISTER,
-  POST_USER_REQUEST,
-  POST_USER_SUCCESS,
-  POST_USER_ERROR,
-  PUT_USER_REQUEST,
-  PUT_USER_SUCCESS,
-  PUT_USER_ERROR,
-  POST_USER_CONFLICT,
-  DELETE_USER_REQUEST,
-  DELETE_USER_SUCCESS,
-  DELETE_USER_ERROR,
-  GET_USER_REQUEST,
-  GET_USER_SUCCESS,
-  GET_USER_ERROR,
-  GET_USER_NOT_FOUND,
-  GET_USER_HAS_EVENTS
-} from "./index";
+import * as types from "./index";
 
 const createAction = (type, payload) => ({
   type,
   payload
 })
 
-export const initialUserState = payload => createAction(INITIAL_USER_STATE, payload)
+export const initialUserState = payload => createAction(types.INITIAL_USER_STATE, payload)
 
-export const finallyUserRegister = payload => createAction(FINALLY_USER_REGISTER, payload)
+export const finallyUserRegister = payload => createAction(types.FINALLY_USER_REGISTER, payload)
 
-export const postUserRequest = payload => createAction(POST_USER_REQUEST, payload)
+export const postUserRequest = payload => createAction(types.POST_USER_REQUEST, payload)
 
-export const postUserSuccess = payload => createAction(POST_USER_SUCCESS, payload)
+export const postUserSuccess = payload => createAction(types.POST_USER_SUCCESS, payload)
 
-export const postUserError = payload => createAction(POST_USER_ERROR, payload)
+export const postUserError = payload => createAction(types.POST_USER_ERROR, payload)
 
-export const postUserConflict = payload => createAction(POST_USER_CONFLICT, payload)
+export const postUserConflict = payload => createAction(types.POST_USER_CONFLICT, payload)
 
-export const putUserRequest = payload => createAction(PUT_USER_REQUEST, payload)
+export const putUserRequest = payload => createAction(types.PUT_USER_REQUEST, payload)
 
-export const putUserSuccess = payload => createAction(PUT_USER_SUCCESS, payload)
+export const putUserSuccess = payload => createAction(types.PUT_USER_SUCCESS, payload)
 
-export const putUserError = payload => createAction(PUT_USER_ERROR, payload)
+export const putUserError = payload => createAction(types.PUT_USER_ERROR, payload)
 
-export const deleteUserRequest = payload => createAction(DELETE_USER_REQUEST, payload)
+export const putUserConflict = payload => createAction(types.PUT_USER_CONFLICT, payload)
 
-export const deleteUserSuccess = payload => createAction(DELETE_USER_SUCCESS, payload)
+export const deleteUserRequest = payload => createAction(types.DELETE_USER_REQUEST, payload)
 
-export const deleteUserError = payload => createAction(DELETE_USER_ERROR, payload)
+export const deleteUserSuccess = payload => createAction(types.DELETE_USER_SUCCESS, payload)
 
-export const getUserRequest = payload => createAction(GET_USER_REQUEST, payload)
+export const deleteUserError = payload => createAction(types.DELETE_USER_ERROR, payload)
 
-export const getUserSuccess = payload => createAction(GET_USER_SUCCESS, payload)
+export const getUserRequest = payload => createAction(types.GET_USER_REQUEST, payload)
 
-export const getUserError = payload => createAction(GET_USER_ERROR, payload)
+export const getUserSuccess = payload => createAction(types.GET_USER_SUCCESS, payload)
 
-export const getUserNotFound = payload => createAction(GET_USER_NOT_FOUND, payload)
+export const getUserError = payload => createAction(types.GET_USER_ERROR, payload)
 
-export const getUserHasEvents = payload => createAction(GET_USER_HAS_EVENTS, payload)
+export const getUserNotFound = payload => createAction(types.GET_USER_NOT_FOUND, payload)
+
+export const getUserHasEvents = payload => createAction(types.GET_USER_HAS_EVENTS, payload)
 

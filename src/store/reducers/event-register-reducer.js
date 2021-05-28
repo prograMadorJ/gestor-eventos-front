@@ -1,20 +1,4 @@
-import {
-  INITIAL_EVENT_STATE,
-  FINALLY_EVENT_REGISTER,
-  POST_EVENT_REQUEST,
-  POST_EVENT_SUCCESS,
-  POST_EVENT_ERROR,
-  PUT_EVENT_ERROR,
-  PUT_EVENT_REQUEST,
-  PUT_EVENT_SUCCESS,
-  DELETE_EVENT_ERROR,
-  DELETE_EVENT_REQUEST,
-  DELETE_EVENT_SUCCESS,
-  GET_EVENT_REQUEST,
-  GET_EVENT_SUCCESS,
-  GET_EVENT_ERROR,
-  GET_EVENT_NOT_FOUND
-} from "../actions";
+import * as types from "../actions";
 
 const initialState = {
   data: [],
@@ -169,35 +153,35 @@ function getEventNotFoundReducer(payload) {
 
 export const eventRegisterReducer = (state = initialState, action) => {
   switch (action.type) {
-    case INITIAL_EVENT_STATE:
+    case types.INITIAL_EVENT_STATE:
       return {...initialState}
-    case FINALLY_EVENT_REGISTER:
+    case types.FINALLY_EVENT_REGISTER:
       return {...state, ...finallyRegister(action.payload)}
-    case POST_EVENT_REQUEST:
+    case types.POST_EVENT_REQUEST:
       return {...state, ...postEventRequestReducer(action.payload)}
-    case POST_EVENT_SUCCESS:
+    case types.POST_EVENT_SUCCESS:
       return {...state, ...postEventSuccessReducer(action.payload)}
-    case POST_EVENT_ERROR:
+    case types.POST_EVENT_ERROR:
       return {...state, ...postEventErrorReducer(action.payload)}
-    case PUT_EVENT_ERROR:
+    case types.PUT_EVENT_ERROR:
       return {...state, ...putEventErrorReducer(action.payload)}
-    case PUT_EVENT_REQUEST:
+    case types.PUT_EVENT_REQUEST:
       return {...state, ...putEventRequestReducer(action.payload)}
-    case PUT_EVENT_SUCCESS:
+    case types.PUT_EVENT_SUCCESS:
       return {...state, ...putEventSuccessReducer(action.payload)}
-    case DELETE_EVENT_ERROR:
+    case types.DELETE_EVENT_ERROR:
       return {...state, ...deleteEventErrorReducer(action.payload)}
-    case DELETE_EVENT_REQUEST:
+    case types.DELETE_EVENT_REQUEST:
       return {...state, ...deleteEventRequestReducer(action.payload)}
-    case DELETE_EVENT_SUCCESS:
+    case types.DELETE_EVENT_SUCCESS:
       return {...state, ...deleteEventSuccessReducer(action.payload)}
-    case GET_EVENT_REQUEST:
+    case types.GET_EVENT_REQUEST:
       return {...state, ...getEventRequestReducer(action.payload)}
-    case GET_EVENT_SUCCESS:
+    case types.GET_EVENT_SUCCESS:
       return {...state, ...getEventSuccessReducer(action.payload)}
-    case GET_EVENT_ERROR:
+    case types.GET_EVENT_ERROR:
       return {...state, ...getEventErrorReducer(action.payload)}
-    case GET_EVENT_NOT_FOUND:
+    case types.GET_EVENT_NOT_FOUND:
       return {...state, ...getEventNotFoundReducer(action.payload)}
     default:
       return state;

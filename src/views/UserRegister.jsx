@@ -2,25 +2,11 @@ import { connect } from 'react-redux';
 import RegisterForm from "../components/user-register/RegisterForm";
 import DataTableList from "../components/user-register/DataTableList";
 import { useDispatch } from "react-redux";
-import {
-  deleteUserError,
-  deleteUserRequest, deleteUserSuccess,
-  finallyUserRegister,
-  getUserError, getUserHasEvents,
-  getUserNotFound,
-  getUserRequest,
-  getUserSuccess,
-  initialUserState,
-  postUserConflict,
-  postUserError,
-  postUserRequest,
-  postUserSuccess, putUserError, putUserRequest, putUserSuccess
-} from "../store/actions/user-register-actions";
+import * as act from "../store/actions/user-register-actions";
 import {Button} from "react-bootstrap";
 import {useEffect, useState} from "react";
 import {setTitleHeaderApp} from "../store/actions/app-actions";
 import service from "../services/UserRegisterService";
-import eventService from "../services/EventRegisterService";
 import ModalMessage from "../components/modal/ModalMessage";
 import {authLogoutSuccess} from "../store/actions/auth-actions";
 
@@ -40,28 +26,28 @@ function UserRegister(props) {
   
   
   function handleRegisterUser(data) {
-    dispatch(initialUserState())
-    dispatch(postUserRequest())
+    dispatch(act.initialUserState())
+    dispatch(act.postUserRequest())
     
     service.createUser(data, authState.token).then(() => {
-      dispatch(postUserSuccess({
+      dispatch(act.postUserSuccess({
         handleClose: () => {
           setIsNewUser(false);
-          dispatch(finallyUserRegister())
+          dispatch(act.finallyUserRegister())
           fetchUsers()
         }
       }))
     }).catch(err => {
       if(err && err.response && err.response.status === 409)
-        dispatch(postUserConflict({
+        dispatch(act.postUserConflict({
           handleClose: () => {
-            dispatch(finallyUserRegister())
+            dispatch(act.finallyUserRegister())
           }
         }))
       else {
-        dispatch(postUserError({
+        dispatch(act.postUserError({
           handleClose: () => {
-            dispatch(finallyUserRegister())
+            dispatch(act.finallyUserRegister())
           }
         }))
       }
@@ -70,53 +56,72 @@ function UserRegister(props) {
   }
   
   function handleUpdateUser(data) {
-    dispatch(initialUserState())
-    dispatch(putUserRequest())
+    dispatch(act.initialUserState())
+    dispatch(act.putUserRequest())
     
     service.updateUser(data, authState.token).then(() => {
-      dispatch(putUserSuccess({
+      dispatch(act.putUserSuccess({
         handleClose: () => {
           setIsEditUser(false);
-          dispatch(finallyUserRegister())
+          dispatch(act.finallyUserRegister())
           fetchUsers()
         }
       }))
     }).catch(err => {
-      dispatch(putUserError({
-        handleClose: () => {
-          dispatch(finallyUserRegister())
-        }
-      }))
+      if(err && err.response
+        && err.response.status === 409)
+        dispatch(act.putUserConflict({
+          handleClose: () => {
+            dispatch(act.finallyUserRegister())
+            fetchUsers()
+          }
+        }))
+      else
+        dispatch(act.putUserError({
+          handleClose: () => {
+            dispatch(act.finallyUserRegister())
+          }
+        }))
       checkAuthError(err)
     })
   }
   
-  function handleRemoveUser(data) {
-    dispatch(initialUserState())
-    dispatch(deleteUserRequest())
+  function handleDeleteUser(data) {
+    dispatch(act.initialUserState())
+    dispatch(act.deleteUserRequest())
     
     service.deleteUser(data.id, authState.token).then(() => {
-      dispatch(deleteUserSuccess())
+      dispatch(act.deleteUserSuccess())
       fetchUsers()
     }).catch(err => {
-      dispatch(deleteUserError({
-        handleClose: () => {}
-      }))
+      if(err && err.response
+        && err.response.status === 422
+        && err.response.data.message === 'cannot delete because has events')
+        dispatch(act.getUserHasEvents({
+          handleClose: () => {
+            dispatch(act.finallyUserRegister())
+            fetchUsers()
+          }
+        }))
+      else
+        dispatch(act.deleteUserError({
+          handleClose: () => {}
+        }))
       checkAuthError(err)
     })
   }
   
   function fetchUsers() {
-    dispatch(getUserRequest())
+    dispatch(act.getUserRequest())
     
     service.getAllUsers(authState.token).then(result => {
-      dispatch(getUserSuccess({
+      dispatch(act.getUserSuccess({
         data: result.data.content
       }))
     }).catch(err => {
-      if(err && err.response.status === 404) return dispatch(getUserNotFound())
+      if(err && err.response.status === 404) return dispatch(act.getUserNotFound())
       checkAuthError(err)
-      dispatch(getUserError(({
+      dispatch(act.getUserError(({
         handleClose: () => {}
       })))
     });
@@ -127,26 +132,6 @@ function UserRegister(props) {
     setIsEditUser(true)
   }
   
-  function handleDeleteUser (data) {
-    findHasNoEvents(data)
-      .then(() => {
-        dispatch(getUserHasEvents({
-          handleClose: () => {
-            dispatch(finallyUserRegister())
-          }
-        }))
-      }).catch(err => {
-      if (err.response && err.response.data.content === null) {
-        handleRemoveUser(data)
-      } else {
-        dispatch(deleteUserError({
-          handleClose: () => {
-            dispatch(finallyUserRegister())
-          }
-        }))
-      }
-    })
-  }
   
   const handleClickNewUser = () => {
     setIsNewUser(true)
@@ -160,12 +145,6 @@ function UserRegister(props) {
   const handleCancelEditUser = () => {
     setIsEditUser(false)
     fetchUsers()
-  }
-  
-  async function findHasNoEvents(user) {
-    const id = user ? user.id : null
-    const result = await eventService.getEventByUserId(id, authState.token)
-    return result && result.data && result.data.content === null
   }
   
   function checkAuthError(err) {

@@ -1,22 +1,4 @@
-import {
-  INITIAL_USER_STATE,
-  FINALLY_USER_REGISTER,
-  POST_USER_REQUEST,
-  POST_USER_SUCCESS,
-  POST_USER_ERROR,
-  POST_USER_CONFLICT,
-  PUT_USER_REQUEST,
-  PUT_USER_SUCCESS,
-  PUT_USER_ERROR,
-  DELETE_USER_REQUEST,
-  DELETE_USER_SUCCESS,
-  DELETE_USER_ERROR,
-  GET_USER_REQUEST,
-  GET_USER_SUCCESS,
-  GET_USER_ERROR,
-  GET_USER_NOT_FOUND,
-  GET_USER_HAS_EVENTS
-} from "../actions";
+import * as types from "../actions";
 
 const initialState = {
   data: [],
@@ -135,6 +117,19 @@ function putUserErrorReducer(payload) {
   }
 }
 
+function putUserConfictReducer(payload) {
+  return {
+    status: 3,
+    modal: {
+      status: 3,
+      title: 'Atenção',
+      message: 'Não foi possível conluir a operação pois o e-mail a ser atualizado já exsite cadastrado para outro usuário.',
+      showSpinner: false,
+      handleClose: payload && payload.handleClose
+    }
+  }
+}
+
 
 
 function deleteUserRequestReducer() {
@@ -197,39 +192,41 @@ function getUserHasEventReducer(payload) {
 
 export const userRegisterReducer = (state = initialState, action) => {
   switch (action.type) {
-    case INITIAL_USER_STATE:
+    case types.INITIAL_USER_STATE:
       return {...initialState}
-    case FINALLY_USER_REGISTER:
+    case types.FINALLY_USER_REGISTER:
       return {...state, ...finallyRegister(action.payload)}
-    case POST_USER_REQUEST:
+    case types.POST_USER_REQUEST:
       return {...state, ...postUserRequestReducer(action.payload)}
-    case POST_USER_SUCCESS:
+    case types.POST_USER_SUCCESS:
       return {...state, ...postUserSuccessReducer(action.payload)}
-    case POST_USER_ERROR:
+    case types.POST_USER_ERROR:
       return {...state, ...postUserErrorReducer(action.payload)}
-    case POST_USER_CONFLICT:
+    case types.POST_USER_CONFLICT:
       return {...state, ...postUserConfictReducer(action.payload)}
-    case PUT_USER_ERROR:
+    case types.PUT_USER_ERROR:
       return {...state, ...putUserErrorReducer(action.payload)}
-    case PUT_USER_REQUEST:
+    case types.PUT_USER_REQUEST:
       return {...state, ...putUserRequestReducer(action.payload)}
-    case PUT_USER_SUCCESS:
+    case types.PUT_USER_SUCCESS:
       return {...state, ...putUserSuccessReducer(action.payload)}
-    case DELETE_USER_ERROR:
+    case types.PUT_USER_CONFLICT:
+      return {...state, ...putUserConfictReducer(action.payload)}
+    case types.DELETE_USER_ERROR:
       return {...state, ...deleteUserErrorReducer(action.payload)}
-    case DELETE_USER_REQUEST:
+    case types.DELETE_USER_REQUEST:
       return {...state, ...deleteUserRequestReducer(action.payload)}
-    case DELETE_USER_SUCCESS:
+    case types.DELETE_USER_SUCCESS:
       return {...state, ...deleteUserSuccessReducer(action.payload)}
-    case GET_USER_REQUEST:
+    case types.GET_USER_REQUEST:
       return {...state, ...getUserRequestReducer(action.payload)}
-    case GET_USER_SUCCESS:
+    case types.GET_USER_SUCCESS:
       return {...state, ...getUserSuccessReducer(action.payload)}
-    case GET_USER_ERROR:
+    case types.GET_USER_ERROR:
       return {...state, ...getUserErrorReducer(action.payload)}
-    case GET_USER_NOT_FOUND:
+    case types.GET_USER_NOT_FOUND:
       return {...state, ...getUserNotFoundReducer(action.payload)}
-    case GET_USER_HAS_EVENTS:
+    case types.GET_USER_HAS_EVENTS:
       return {...state, ...getUserHasEventReducer(action.payload)}
     default:
       return state;

@@ -2,19 +2,7 @@ import { connect } from 'react-redux';
 import RegisterForm from "../components/event-register/RegisterForm";
 import DataTableList from "../components/event-register/DataTableList";
 import { useDispatch } from "react-redux";
-import {
-  deleteEventError,
-  deleteEventRequest, deleteEventSuccess,
-  finallyEventRegister,
-  getEventError,
-  getEventNotFound,
-  getEventRequest,
-  getEventSuccess,
-  initialEventState,
-  postEventError,
-  postEventRequest,
-  postEventSuccess, putEventError, putEventRequest, putEventSuccess
-} from "../store/actions/event-register-actions";
+import * as act from "../store/actions/event-register-actions";
 import {Button} from "react-bootstrap";
 import {useEffect, useState} from "react";
 import {setTitleHeaderApp} from "../store/actions/app-actions";
@@ -38,26 +26,26 @@ function EventRegister(props) {
   }, [])
   
   function handleRegisterEvent(data) {
-    dispatch(initialEventState())
-    dispatch(postEventRequest())
+    dispatch(act.initialEventState())
+    dispatch(act.postEventRequest())
   
     data.user = {id: data.user}
     
     service.createEvent(data, authState.token).then(() => {
-      dispatch(postEventSuccess({
+      dispatch(act.postEventSuccess({
         handleClose: () => {
           setIsNewEvent(false);
-          dispatch(finallyEventRegister())
+          dispatch(act.finallyEventRegister())
           fetchEvents()
         }
       }))
     }).catch(err => {
       checkAuthError(err)
       
-      dispatch(postEventError({
+      dispatch(act.postEventError({
         handleClose: () => {
           setIsEditEvent(false);
-          dispatch(finallyEventRegister())
+          dispatch(act.finallyEventRegister())
           fetchEvents()
         }
       }))
@@ -65,26 +53,26 @@ function EventRegister(props) {
   }
   
   function handleUpdateEvent(data) {
-    dispatch(initialEventState())
-    dispatch(putEventRequest())
+    dispatch(act.initialEventState())
+    dispatch(act.putEventRequest())
     
     data.user = {id: data.user}
     
     service.updateEvent(data, authState.token).then(() => {
-      dispatch(putEventSuccess({
+      dispatch(act.putEventSuccess({
         handleClose: () => {
           setIsEditEvent(false);
-          dispatch(finallyEventRegister())
+          dispatch(act.finallyEventRegister())
           fetchEvents()
         }
       }))
     }).catch(err => {
       checkAuthError(err)
       
-      dispatch(putEventError({
+      dispatch(act.putEventError({
         handleClose: () => {
           setIsEditEvent(false);
-          dispatch(finallyEventRegister())
+          dispatch(act.finallyEventRegister())
           fetchEvents()
         }
       }))
@@ -92,31 +80,31 @@ function EventRegister(props) {
   }
   
   function handleRemoveEvent(data) {
-    dispatch(initialEventState())
-    dispatch(deleteEventRequest())
+    dispatch(act.initialEventState())
+    dispatch(act.deleteEventRequest())
     
     service.deleteEvent(data.id, authState.token).then(() => {
-      dispatch(deleteEventSuccess())
+      dispatch(act.deleteEventSuccess())
       fetchEvents()
     }).catch(err => {
       checkAuthError(err)
       
-      dispatch(deleteEventError())
+      dispatch(act.deleteEventError())
     })
   }
   
   function fetchEvents() {
-    dispatch(getEventRequest())
+    dispatch(act.getEventRequest())
     
     service.getAllEvents(authState.token).then(result => {
-      dispatch(getEventSuccess({
+      dispatch(act.getEventSuccess({
         data: result.data.content
       }))
     }).catch(err => {
-      if(err.response.status === 404) return dispatch(getEventNotFound())
+      if(err.response.status === 404) return dispatch(act.getEventNotFound())
       checkAuthError(err)
       
-      dispatch(getEventError())
+      dispatch(act.getEventError())
     });
   }
   
