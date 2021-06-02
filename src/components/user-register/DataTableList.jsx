@@ -54,7 +54,7 @@ function DataTableList(props) {
                 <Button onClick={() => handleEdit(item)} size="sm" className="mr-2" variant="transparent" title="editar">
                   <BsPencil color="#007bff" strokeWidth={0.5}/>
                 </Button>
-                {item.role !== authState.user.role &&
+                {authState.user.admin && !item.roles.includes("SYSTEM")  &&
                 <Button onClick={() => dialogActions( () => handleDelete(item))} size="sm" variant="transparent" title="remover">
                   <BsTrash color="#dc3545" strokeWidth={0.5}/>
                 </Button>}
